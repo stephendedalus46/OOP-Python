@@ -58,10 +58,11 @@ class Hand:  # player's class
         if card.rank == 'Ace':
             self.aces += 1
 
-    def adjust_for_ace(self):  # dealing with 1/11 ace value
-        while self.value > 21 and self.aces:
-            self.value -= 10
-            self.aces -= 1
+    def adjust_for_ace(self):  # dealing with 1/11 ace value and two aces handling
+        if not (self.cards[0].rank == 'Ace' and self.cards[1].rank == 'Ace'):
+            while self.value > 21 and self.aces:
+                self.value -= 10
+                self.aces -= 1
 
 
 # TESTING DEALING CARDS TO PLAYER'S HAND
@@ -202,13 +203,12 @@ while True:
         show_some(player_hand, dealer_hand)
 
         # If player's hand exceeds 21, run player_busts() and break out of loop
-        if player_hand.value > 21:
+        if player_hand.value > 21 and not (player_hand.value == 22 and len(player_hand.cards) == 2):  # two aces handling
             player_busts(player_hand, dealer_hand, player_chips)
             break
 
             # If Player hasn't busted, play Dealer's hand until Dealer reaches 17
-    if player_hand.value <= 21:
-
+    if player_hand.value <= 21 or (player_hand.value == 22 and len(player_hand.cards) == 2):  # two aces handling
         while dealer_hand.value < 17:
             hit(deck, dealer_hand)
 
@@ -216,7 +216,7 @@ while True:
         show_all(player_hand, dealer_hand)
 
         # Run different winning scenarios
-        if dealer_hand.value > 21:
+        if dealer_hand.value > 21 and not (dealer_hand.value == 22 and len(dealer_hand.cards) == 2):  # two aces handling
             dealer_busts(player_hand, dealer_hand, player_chips)
 
         elif dealer_hand.value > player_hand.value:
